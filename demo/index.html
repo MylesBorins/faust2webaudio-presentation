@@ -23,7 +23,9 @@
 
     <script src="js/faust-noise.js"></script>
     <script>
-
+      var noise = faust.noise();
+      noise.update("Volume", 0.1);
+      noise.play();
     </script>
     </body>
 

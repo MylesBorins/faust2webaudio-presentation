@@ -182,3 +182,212 @@ flock.ugen.asmSin.module = function (stdlib, foreign, heap) {
 
 
 Emscripten is an LLVM to JavaScript compiler. It takes LLVM bitcode (which can be generated from C/C++ using Clang, or any other language that can be converted into LLVM bitcode) and compiles that into JavaScript, which can be run on the web (or anywhere else JavaScript can run).
+
+
+
+##Faust -> C++
+So using the faust compiler (specifically the faust2-asmjs branch) we can compile from [faust](https://gist.github.com/TheAlphaNerd/c904b82dae7f26782d29#file-noise-dsp) to [C++](https://gist.github.com/TheAlphaNerd/c904b82dae7f26782d29#file-faust-noise-cpp) with the following command
+```
+faust -a minimal.cpp -i -uim -cn Noise \
+ dsp/noise.dsp -o cpp/faust-noise.cpp
+```
+
+
+In order to get access to the various parts of a C++ class via emscripten we need to write a simple wrapper on top of our Noise class.  You can find a copy of the wrapper on [github](https://gist.github.com/TheAlphaNerd/c904b82dae7f26782d29#file-faust-wrapper-cpp)
+
+This wrapper makes meta functions that allow you to create and operate on objects using pointers, as emscripten does not have fantastic support for working with C++ objects.
+
+We then pass the wrapper through sed to template the class name and concatenate to the end of the file compiled above
+```bash
+sed -e "s/DSP/NOISE/g" -e "s/Dsp/Noise/g" -e "s/dsp/noise/g" \
+cpp/faust-wrapper.cpp >> cpp/faust-noise.cpp
+```
+
+
+We can then compile the resulting C++ file to asm.js using emscripten with the following command
+```bash
+emcc -O2 cpp/faust-noise.cpp -o js/faust-noise-temp.js \
+-s EXPORTED_FUNCTIONS="['_NOISE_constructor','_NOISE_destructor', \ 
+'_NOISE_compute', '_NOISE_getNumInputs', '_NOISE_getNumOutputs',  \
+'_NOISE_getNumParams', '_NOISE_getNextParam']"
+```
+
+You will notice the reference to exported functions above.  This is how we let emscripten know which functions are going to be accessible in JavaScript so that their variable names are not obfuscated by the optimizer.
+
+This will generate the [following JavaScript file](https://gist.github.com/TheAlphaNerd/c904b82dae7f26782d29#file-faust-noise-js)
+
+
+Finally we apply the JavaScript wrapper (again templated via sed) to the compiled JavaScript in order to wrap the exported functions and generate an object literal with a programming interface similar to that found in the native WebAudio nodes.
+
+You can find the wrapper [here](https://gist.github.com/TheAlphaNerd/c904b82dae7f26782d29#file-faust-wrapper-js)
+
+
+#Phew...
+
+
+#But does it work?
+
+
+#Sure,
+#[take a listen](/demo/index.html)
+
+
+##But it is unnecessarily complicated
+
+
+
+###Managing memory in C++ while maintaining persistence when compiled to JavaScript can be tricky.  
+
+
+###Specifically because faust represents inputs and outputs as a float **
+
+
+###That means the input and output variables are in fact a pointer to an array of channels
+
+
+##Each channel in the array is a pointer to a buffer
+
+
+##Each buffer is an array consisting of the samples represented as a floating point number between -1 and 1.
+
+
+###This means we need to be using malloc in JavaScript to create variables in the heap which will then be used when making function calls into the c++ virtual machine to generate samples.  
+
+####These pointers will then need to be dereferenced, again in JavaScript, sample by sample to copy the buffers over to WebAudio
+
+
+Further, every faust project has a different number of controllable parameters.  While Faust currently offers a way to create a data structure that maintains all of the information about these parameters, including name and pointer value.
+
+
+Unfortunately emscripten does not offer stable support for transferring the values of this generated data structure into JavaScript land.  
+
+As such a meta UI class needed to be created to generate a map, which is then iterated across via calls from JavaScript.  
+
+This iteration has a manual stack create from JavaScript which then injects pointers to grep out the data that lives on the heap to be accessible as string literals and numbers in JavaScript.
+
+
+![wat?](img/wat.jpeg)
+
+
+
+##This seems unnecessarily complicated
+
+
+##Why should we be spending time managing these pointers?
+
+
+###How are we supposed to deal with the pointers in JavaScript land without creating lots of garbage?
+
+
+
+##But didn't I say Faust is Functional?
+
+
+##Indeed it is
+
+
+###So why are am I going from 
+
+Functional -> Object Oriented -> Functional
+
+
+![Clever Girl](img/clever-girl.png)
+
+
+
+##Emscripten comes with its own virtual machine as well as a number of compilation optimizations
+
+
+##Simply put, a bunch of performance for free!
+
+
+##That made it a tempting starting point
+
+
+##As a primary research goal is to create very efficient web audio based unit generators
+
+
+##While we do not yet see the optimizing effects in Chrome, we can already see the benefits of using asm.js in the Firefox
+
+
+
+##DEMO TIME!!!
+
+
+
+#In Conclusion
+
+
+##Things are still not perfect
+
+
+##The browser is still not the perfect place to do signal processing
+
+
+##Everything in JavaScript lives in a single thread... 
+
+
+##... which is gross
+
+
+#BUT
+
+
+###Things will only get better with time.
+####and the code compiled with Faust2Webaudio will only become more performant as browsers continue to build out support for asm.js and come up with better ways to handle audio 
+(like a seperate thread *cough cough*)
+
+
+
+##Oh yeah...
+###my code isn't perfect yet
+
+
+###I still have not yet perfected statically linking multiple files, and as such every unit generator has its own instance of the emscripten virtual machine...
+
+
+#YUK
+
+
+
+###Further, the current way of gathering parameters is far from elegant.  This could be improved by developing a new architecture file for faust, improving support for data structures in emscripten, and also re evaluating the current way I toss things between JavaScript land and the virtual machine.
+
+
+
+##Finally the current compilation process leaves a lot to be desired.
+
+
+###I love shell scripts and sed as much as the next neckbeard, but this is definitely not an ideal development environment.
+
+###Moving forward I would like to get all of the C++ templating to live in the faust compiler via a custom architecture file.  
+
+
+###I would then like to get all JavaScript related compilation (with emscripten) and templating to be handled with a node.js based development stack.  Specifically Yeoman for scaffolding new projects and grunt for task automation
+
+
+###My vision is that you could drop any Faust .dsp file into a folder and the tool chain should automate the rest for you.
+
+
+
+##I truly believe that the web 
+##is the ultimate open and free platform
+
+
+##Wether or not you like JavaScript
+###The code will run anywhere without requiring any setup
+
+
+###This is an extremely powerful concept
+####Wouldn't it be nice if the same ugen code could run on your macintosh latptop, your linux desktop, and your fridge?
+
+###The web is only going to get faster, and support for audio is only going to get better.
+
+
+###But if developers living on the bleeding edge don't take the platform seriously, it will only take longer for the web to catch up with native code.
+
+
+
+#The Begining
+<br>
+###Faust2Webaudio
+###[Myles Borins](http://thealphanerd.io) | [@the\_alpha\_nerd](https://twitter.com/the_alpha_nerd)

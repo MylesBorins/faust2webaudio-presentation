@@ -21,7 +21,7 @@
 
 
 ###I currently work at a startup called Famo.us
-[This will be an image of the Famo.us Logo](http://famo.us)
+[![Famo.us Logo](/img/famous_logo.png)](http://famo.us)
 
 We develop an open source JavaScript framework used to create performant web applications.  Our hope is to help democratize the process of application development, and rid the world of the concept of a "platform".
 
