@@ -127,7 +127,7 @@ There is only one answer...
 
 ###asm.js and typed arrays to the rescue!
 
-[![asm.js](/img/asmjs.jpg)](http://asmjs.org/)
+[![asm.js](img/asmjs.jpg)](http://asmjs.org/)
 
 
 asm.js is a strict subset of JavaScript that can be used as a low-level, efficient target language for compilers. The asm.js language provides an abstraction similar to the C/C++ virtual machine: a large binary heap with efficient loads and stores, integer and floating-point arithmetic, first-order function definitions, and function pointers.
@@ -178,7 +178,7 @@ flock.ugen.asmSin.module = function (stdlib, foreign, heap) {
 
 
 ##Introducing
-[![Emscripten](/img/emscripten.jpg)](http://emscripten.org/)
+[![Emscripten](img/emscripten.jpg)](http://emscripten.org/)
 
 
 Emscripten is an LLVM to JavaScript compiler. It takes LLVM bitcode (which can be generated from C/C++ using Clang, or any other language that can be converted into LLVM bitcode) and compiles that into JavaScript, which can be run on the web (or anywhere else JavaScript can run).
@@ -229,7 +229,7 @@ You can find the wrapper [here](https://gist.github.com/TheAlphaNerd/c904b82dae7
 
 
 #Sure,
-#[take a listen](/demo/index.html)
+#[take a listen](demo/index.html)
 
 
 ##But it is unnecessarily complicated
