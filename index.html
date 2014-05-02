@@ -77,6 +77,13 @@
 				// Parallax scrolling
 				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
 				// parallaxBackgroundSize: '2100px 900px',
+        
+      	multiplex: {
+      		// Example values. To generate your own, see the socket.io server instructions.
+      		secret: '1399024526116241593', // Obtained from the socket.io server. Gives this (the master) control of the presentation
+      		id: 'ed6e0498f6255f23', // Obtained from socket.io server
+      		url: 'revealjs.jit.su:80' // Location of socket.io server
+      	},
 
 				// Optional libraries used to extend on reveal.js
 				dependencies: [
@@ -85,7 +92,9 @@
 					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
 					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: '//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.10/socket.io.min.js', async: true },,
+          { src: 'plugin/multiplex/master.js', async: true }
 				]
 			});
 
