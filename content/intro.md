@@ -3,6 +3,8 @@
 ####... for those the don't like to do things once
 <small>Created by [Myles Borins](http://thealphanerd.io) | [@the\_alpha\_nerd](http://twitter.com/the_alpha_nerd)</small>
 
+#####Follow along on http://thealphanerd.io/faust2webaudio
+
 
 
 #To start off
