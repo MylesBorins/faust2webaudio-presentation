@@ -12,16 +12,16 @@
 
 ##Hai my name is
 #Myles
-![Me!](/img/me.jpg)
+![Me!](img/me.jpg)
 
 
 ###I am a recent graduate from ccrma
-[![ccrma](/img/karma_logo.png)](http://ccrma.stanford.edu)
+[![ccrma](img/karma_logo.png)](http://ccrma.stanford.edu)
 ###The Center for Computer Research in Music and Acoustics
 
 
 ###I currently work at a startup called Famo.us
-[![Famo.us Logo](/img/famous_logo.png)](http://famo.us)
+[![Famo.us Logo](img/famous_logo.png)](http://famo.us)
 
 We develop an open source JavaScript framework used to create performant web applications.  Our hope is to help democratize the process of application development, and rid the world of the concept of a "platform".
 
@@ -56,7 +56,7 @@ We develop an open source JavaScript framework used to create performant web app
 
 
 
-![yodawg](/img/yodawg.png)
+![yodawg](img/yodawg.png)
 
 
 
@@ -67,7 +67,7 @@ We develop an open source JavaScript framework used to create performant web app
 
 
 ####I first explored it during my undegraduate thesis at OCAD
-[![speaker-bot](/img/speaker-bot.jpg)](http://www.speaker-bot.com)
+[![speaker-bot](img/speaker-bot.jpg)](http://www.speaker-bot.com)
 
 
 
